@@ -1,3 +1,5 @@
+import { Page } from 'playwright';
+
 export type IssueType =
     | 'state_break'
     | 'layout_break'
@@ -32,7 +34,7 @@ export interface AgentCheckOptions {
     baseline?: string | Buffer;
 
     /** The current screenshot to evaluate */
-    current: string | Buffer; // Note: We'll expand this to Playwright Page later
+    current: string | Buffer | Page;
 
     /** Modes for comparison */
     mode?: 'semantic-structure' | 'strict-layout';
