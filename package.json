@@ -1,0 +1,37 @@
+{
+  "name": "comm-and-sense",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdeeb95/comm-and-sense.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mdeeb95/comm-and-sense/issues"
+  },
+  "homepage": "https://github.com/mdeeb95/comm-and-sense#readme",
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "npm-run-all": "^4.1.5",
+    "playwright": "^1.58.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0"
+  }
+}
