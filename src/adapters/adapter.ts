@@ -6,6 +6,10 @@ export interface EvaluateOptions {
 export interface EvaluateResult {
     response: string;
     latencyMs: number;
+    usage?: {
+        promptTokens: number;
+        completionTokens: number;
+    };
 }
 
 export interface VLMAdapter {

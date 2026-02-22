@@ -23,7 +23,8 @@ export const defaultConfig: CommSenseConfig = {
         }
     },
     defaultModel: 'claude',
-    defaultEnsemble: 1
+    defaultEnsemble: 1,
+    defaultAutoDownscale: true
 };
 
 export function mergeConfig(userConfig: Partial<CommSenseConfig>): CommSenseConfig {

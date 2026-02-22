@@ -15,6 +15,7 @@ describe.runIf(hasApiKey)('OpenRouter Live Integration', () => {
         const config: CommSenseConfig = {
             defaultModel: 'openrouter',
             defaultEnsemble: 1,
+            defaultAutoDownscale: true,
             providers: {
                 openrouter: {
                     apiKey: process.env.COMM_SENSE_OPENROUTER_API_KEY as string,

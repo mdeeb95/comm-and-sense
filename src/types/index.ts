@@ -39,6 +39,8 @@ export interface AgentCheckResult {
     };
     /** The actual structured layout data passed to the VLM (if dom extraction was used) */
     domContext?: any;
+    /** Estimated cost in USD of the API calls made during this evaluation */
+    estimatedCostUsd?: number;
 }
 
 export interface AgentCheckOptions {
@@ -57,6 +59,12 @@ export interface AgentCheckOptions {
     /** Modes for comparison */
     mode?: 'semantic-structure' | 'strict-layout' | 'regression';
 
+    /** 
+     * Whether to automatically downscale images (by 50%) before sending to the VLM.
+     * If undefined, defaults to `true` when mode is `semantic-structure`.
+     */
+    autoDownscale?: boolean;
+
     /** Regions to explicitly instruct the VLM to ignore (e.g. to avoid baseline drift false positives) */
     ignoreRegions?: { x: number; y: number; width: number; height: number; }[];
 
@@ -66,8 +74,16 @@ export interface AgentCheckOptions {
     /** Non-determinism mitigation strategy */
     determinism?: 'default' | 'consensus';
 
-    /** Number of runs for consensus voting (default: 3) */
-    ensemble?: number;
+    /** 
+     * Number of runs for consensus voting, or an adaptive strategy configuration.
+     * Adaptive strategy will run once, and only escalate to `maxRuns` if confidence is below `threshold`.
+     * default: 1
+     */
+    ensemble?: number | {
+        strategy: 'adaptive';
+        threshold?: number; // default: 0.85
+        maxRuns?: number;   // default: 3
+    };
 
     /** VLM provider to use */
     model?: 'claude' | 'openai' | 'local' | 'qwen' | 'openrouter' | 'gemini' | 'mistral';
@@ -91,4 +107,5 @@ export interface CommSenseConfig {
     };
     defaultModel: 'claude' | 'openai' | 'local' | 'qwen' | 'openrouter' | 'gemini' | 'mistral';
     defaultEnsemble: number;
+    defaultAutoDownscale: boolean;
 }

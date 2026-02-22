@@ -52,9 +52,18 @@ export class OpenAIAdapter implements VLMAdapter {
 
         const latencyMs = Date.now() - startTime;
 
+        let usage;
+        if (response.usage) {
+            usage = {
+                promptTokens: response.usage.prompt_tokens,
+                completionTokens: response.usage.completion_tokens
+            };
+        }
+
         return {
             response: response.choices[0]?.message?.content || '',
             latencyMs,
+            usage
         };
     }
 }

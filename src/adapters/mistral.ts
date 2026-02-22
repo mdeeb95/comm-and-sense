@@ -51,9 +51,18 @@ export class MistralAdapter implements VLMAdapter {
         const responseContent = response.choices?.[0]?.message?.content;
         const finalResponse = Array.isArray(responseContent) ? responseContent.join('\n') : (responseContent || '');
 
+        let usage;
+        if (response.usage) {
+            usage = {
+                promptTokens: response.usage.promptTokens || 0,
+                completionTokens: response.usage.completionTokens || 0
+            };
+        }
+
         return {
             response: finalResponse,
             latencyMs,
+            usage
         };
     }
 }

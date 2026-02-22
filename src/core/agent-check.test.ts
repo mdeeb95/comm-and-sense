@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterAll, beforeEach } from 'vitest';
 import { agentCheck } from './agent-check.js';
 import { AgentCheckOptions } from '../types/index.js';
 import { chromium, Browser, Page } from 'playwright';
@@ -24,6 +24,10 @@ describe('Core Engine: agentCheck', () => {
         // Create a temporary physical file to test the file-loading logic
         testImagePath = path.join(process.cwd(), 'temp-test-img.png');
         fs.writeFileSync(testImagePath, 'fakedata');
+    });
+
+    beforeEach(() => {
+        vi.clearAllMocks();
     });
 
     afterAll(() => {
@@ -62,6 +66,63 @@ describe('Core Engine: agentCheck', () => {
         // Highest confidence of the winning majority was 0.9
         expect(result.confidence).toBe(0.9);
         expect(result.feedback).toContain('[Ensemble 2/3 Pass]');
+    });
+
+    it('downscales the image when mode is semantic-structure', async () => {
+        // Create a real valid 10x10 PNG using Jimp to ensure parsing doesn't throw
+        const { Jimp } = await import('jimp');
+        const img = new Jimp({ width: 10, height: 10, color: 0xFF0000FF });
+        const validPng = await img.getBuffer('image/png');
+
+        const imgPath = path.join(process.cwd(), 'temp-test-img-valid.png');
+        fs.writeFileSync(imgPath, validPng);
+
+        let capturedBuffer: Buffer | null = null;
+        mockEvaluate.mockImplementationOnce(async (images: Buffer[], prompt: string) => {
+            capturedBuffer = images[0];
+            return { response: '{"pass": true, "confidence": 1.0}' };
+        });
+
+        await agentCheck({ current: imgPath, mode: 'semantic-structure' });
+
+        expect(mockEvaluate).toHaveBeenCalledTimes(1);
+        expect(capturedBuffer).not.toBeNull();
+
+        // Ensure the buffer was modified (downscaled buffer should be different)
+        expect(capturedBuffer!.length).not.toEqual(validPng.length);
+
+        if (fs.existsSync(imgPath)) {
+            fs.unlinkSync(imgPath);
+        }
+    });
+
+    it('bypasses extra ensemble runs when strategy=adaptive and confidence is high', async () => {
+        // High confidence on first try
+        mockEvaluate.mockResolvedValueOnce({ response: '{"pass": true, "confidence": 0.99}' });
+
+        await agentCheck({
+            current: testImagePath,
+            ensemble: { strategy: 'adaptive', threshold: 0.90, maxRuns: 5 }
+        });
+
+        // Should only be called 1 time despite maxRuns=5
+        expect(mockEvaluate).toHaveBeenCalledTimes(1);
+    });
+
+    it('escalates to maxRuns when strategy=adaptive and confidence is low', async () => {
+        // Low confidence on first try triggers remaining runs
+        mockEvaluate
+            .mockResolvedValueOnce({ response: '{"pass": true, "confidence": 0.50}' }) // Run 1
+            .mockResolvedValueOnce({ response: '{"pass": false, "confidence": 0.90}' }) // Run 2
+            .mockResolvedValueOnce({ response: '{"pass": false, "confidence": 0.95}' }); // Run 3
+
+        const result = await agentCheck({
+            current: testImagePath,
+            ensemble: { strategy: 'adaptive', threshold: 0.90, maxRuns: 3 }
+        });
+
+        expect(mockEvaluate).toHaveBeenCalledTimes(3);
+        expect(result.pass).toBe(false); // 2 false vs 1 true
     });
 });
 

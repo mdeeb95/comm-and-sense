@@ -55,9 +55,18 @@ export class ClaudeAdapter implements VLMAdapter {
         const textBlock = response.content.find((block) => block.type === 'text') as Anthropic.TextBlock | undefined;
         const responseText = textBlock ? textBlock.text : '';
 
+        let usage;
+        if (response.usage) {
+            usage = {
+                promptTokens: response.usage.input_tokens,
+                completionTokens: response.usage.output_tokens
+            };
+        }
+
         return {
             response: responseText,
             latencyMs,
+            usage
         };
     }
 }

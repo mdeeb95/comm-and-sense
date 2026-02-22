@@ -70,7 +70,8 @@ describe('VLM Adapters Factory', () => {
     const baseConfig: CommSenseConfig = {
         providers: {},
         defaultModel: 'claude',
-        defaultEnsemble: 1
+        defaultEnsemble: 1,
+        defaultAutoDownscale: true
     };
 
     beforeEach(() => {

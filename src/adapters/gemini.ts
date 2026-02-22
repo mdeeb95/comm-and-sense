@@ -44,9 +44,18 @@ export class GeminiAdapter implements VLMAdapter {
 
         const latencyMs = Date.now() - startTime;
 
+        let usage;
+        if (response.usageMetadata) {
+            usage = {
+                promptTokens: response.usageMetadata.promptTokenCount || 0,
+                completionTokens: response.usageMetadata.candidatesTokenCount || 0
+            };
+        }
+
         return {
             response: response.text || '',
             latencyMs,
+            usage
         };
     }
 }

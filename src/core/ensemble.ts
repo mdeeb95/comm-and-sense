@@ -35,6 +35,7 @@ export function resolveEnsemble(results: AgentCheckResult[]): AgentCheckResult {
         annotatedScreenshot: bestResult.annotatedScreenshot,
         latencyMs: Math.round(avgLatency),
         latencyBreakdown: bestResult.latencyBreakdown,
-        domContext: bestResult.domContext
+        domContext: bestResult.domContext,
+        estimatedCostUsd: results.reduce((acc, r) => acc + (r.estimatedCostUsd || 0), 0)
     };
 }
