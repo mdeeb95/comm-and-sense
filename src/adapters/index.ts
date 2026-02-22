@@ -2,6 +2,8 @@ import { CommSenseConfig } from '../types/index.js';
 import { VLMAdapter } from './adapter.js';
 import { ClaudeAdapter } from './claude.js';
 import { LocalAdapter } from './local.js';
+import { QwenAdapter } from './qwen.js';
+import { OpenAIAdapter } from './openai.js';
 
 export function createAdapter(config: CommSenseConfig): VLMAdapter {
     const model = config.defaultModel;
@@ -19,8 +21,27 @@ export function createAdapter(config: CommSenseConfig): VLMAdapter {
             return new LocalAdapter(endpoint);
         }
         case 'openai': {
-            // Stub for OpenAI, will throw unhandled for now until we build openai.ts
-            throw new Error('OpenAI adapter is not yet implemented');
+            const apiKey = config.providers.openai?.apiKey;
+            const baseURL = config.providers.openai?.baseURL;
+            if (!apiKey) {
+                throw new Error('OpenAI API key is missing from configuration');
+            }
+            return new OpenAIAdapter(apiKey, baseURL, config.providers.openai?.model);
+        }
+        case 'openrouter': {
+            const apiKey = config.providers.openrouter?.apiKey;
+            if (!apiKey) {
+                throw new Error('OpenRouter API key is missing from configuration');
+            }
+            return new OpenAIAdapter(apiKey, 'https://openrouter.ai/api/v1', config.providers.openrouter?.model || 'qwen/qwen-vl-max');
+        }
+        case 'qwen': {
+            const apiKey = config.providers.qwen?.apiKey;
+            const baseURL = config.providers.qwen?.baseURL;
+            if (!apiKey) {
+                throw new Error('Qwen API key is missing from configuration');
+            }
+            return new OpenAIAdapter(apiKey, baseURL, config.providers.qwen?.model);
         }
         default:
             throw new Error(`Unsupported model configured: ${model}`);
