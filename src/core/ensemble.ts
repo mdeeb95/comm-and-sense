@@ -23,6 +23,8 @@ export function resolveEnsemble(results: AgentCheckResult[]): AgentCheckResult {
     const majorityResults = results.filter(r => r.pass === finalPass);
     const bestResult = majorityResults.sort((a, b) => b.confidence - a.confidence)[0];
 
+    const avgLatency = results.reduce((acc, r) => acc + (r.latencyMs || 0), 0) / results.length;
+
     // Optionally we could aggregate all issues into a unique set, but for now 
     // relying on the best representative result prevents duplicate issue spam.
     return {
@@ -30,6 +32,7 @@ export function resolveEnsemble(results: AgentCheckResult[]): AgentCheckResult {
         confidence: bestResult.confidence,
         feedback: `[Ensemble ${passCount}/${results.length} Pass] ${bestResult.feedback}`,
         issues: bestResult.issues,
-        annotatedScreenshot: bestResult.annotatedScreenshot
+        annotatedScreenshot: bestResult.annotatedScreenshot,
+        latencyMs: Math.round(avgLatency)
     };
 }

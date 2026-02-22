@@ -6,6 +6,9 @@
   "directories": {
     "doc": "docs"
   },
+  "bin": {
+    "comm-sense": "./dist/cli/index.js"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
@@ -24,6 +27,7 @@
   },
   "homepage": "https://github.com/mdeeb95/comm-and-sense#readme",
   "devDependencies": {
+    "@types/chalk": "^0.4.31",
     "@types/node": "^25.3.0",
     "npm-run-all": "^4.1.5",
     "playwright": "^1.58.2",
@@ -33,6 +37,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
     "openai": "^6.22.0"
   }
 }

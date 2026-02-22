@@ -27,6 +27,8 @@ export interface AgentCheckResult {
     feedback: string;
     issues: VisualIssue[];
     annotatedScreenshot?: string;
+    /** Total execution latency in milliseconds */
+    latencyMs?: number;
 }
 
 export interface AgentCheckOptions {
