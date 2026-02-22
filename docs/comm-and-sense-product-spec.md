@@ -86,17 +86,23 @@ The recent paper ["Exploring the Capabilities of Vision-Language Models to Detec
 
 ## 5. Core Concepts
 
-### The Visual Anchor (Baseline)
-Unlike legacy tools where baselines are a byproduct of a passing test, in Comm & Sense, the baseline is the primary input. The anchor is the source of truth (the HTML mockup screenshot or design file) that grounds the VLM's understanding.
+### 1. Mockup-Anchored Mode (Recommended)
+As validated by empirical research, providing the VLM with a "known good" baseline image (the HTML mockup) increases semantic bug detection accuracy from ~34% to nearly 100%. In this mode, the mockup acts as the Anchor, and the VLM evaluates the test component relationally.
+
+### 2. Expectation Mode / Zero-Shot (Fully Supported)
+While mockups represent the ideal TDD workflow, it is unrealistic to expect developers to mock every single state of an application. Comm & Sense fully supports passing *only* a natural language expectation string without a baseline image (e.g., `expect: "A blue submit button centered below the form."`). 
+*Note:* To combat the higher inherent hallucination rate of zero-shot VLM evaluation, Comm & Sense heavily relies on DOM Enrichment in this mode to ground the VLM in structural reality.
 
 ### Semantic State Comparison
-The core operation is a `Regression Mode` comparison, heavily biased toward State and Structure. The VLM determines if the "Test Image" fundamentally fulfills the visual requirements defined by the "Anchor Image."
+Whether using an Anchor or Zero-Shot, the core operation is heavily biased toward State and Structure. The VLM determines if the "Test Image" fundamentally fulfills the visual requirements defined by the inputs.
 
-### Multi-Turn Context Anchoring
-Comm & Sense uses a multi-turn inference strategy:
+### Multi-Turn Context Anchoring (When Baseline is Present)
+If a baseline is provided, Comm & Sense uses a multi-turn inference strategy:
 1. Feed the VLM the Anchor Image and task description. Acknowledge grounding.
 2. Feed the VLM the Test Image.
 3. Compare and extract State and Semantic differences.
+
+If no baseline is provided, it falls back to a single-turn structured evaluation using the text expectation and DOM grid.
 
 ### Ensemble Determinism
 To prevent VLM hallucination or flakiness, Comm & Sense executes checks multiple times (e.g., $pass@3$) and uses majority voting to return a deterministic pass/fail result to the agent pipeline.
