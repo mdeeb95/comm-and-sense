@@ -18,6 +18,7 @@ You are explicitly barred from claiming a feature is complete until it has a cor
 * **Test Isolation:** Integration tests (like the VLM Adapters or DOM extractors) must mock external API calls or network requests unless an explicit end-to-end integration suite is being run.
 * **Execution:** After every logical step, you MUST run `npm run test` or `npm run type-check`.
 * **Fixing Errors:** If tests fail or TypeScript throws compile errors, you must stop, investigate the terminal output, and fix the errors immediately before proceeding.
+* **No Script Poop:** It is okay to create quick, standalone scripts in a `scripts/` directory to rapidly verify external API integrations or complex logic. However, you MUST convert them into repeatable `vitest` e2e or integration tests and delete the original script before moving on. Do not leave unmaintained verification scripts scattered around.
 
 ## 3. Code Quality Standards
 * **Type Safety:** Use strict TypeScript definitions. Do not use `any`. Rely heavily on the interfaces defined in `src/types/index.ts`.
