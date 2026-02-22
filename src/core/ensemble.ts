@@ -33,6 +33,8 @@ export function resolveEnsemble(results: AgentCheckResult[]): AgentCheckResult {
         feedback: `[Ensemble ${passCount}/${results.length} Pass] ${bestResult.feedback}`,
         issues: bestResult.issues,
         annotatedScreenshot: bestResult.annotatedScreenshot,
-        latencyMs: Math.round(avgLatency)
+        latencyMs: Math.round(avgLatency),
+        latencyBreakdown: bestResult.latencyBreakdown,
+        domContext: bestResult.domContext
     };
 }

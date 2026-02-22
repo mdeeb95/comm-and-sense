@@ -34,32 +34,49 @@ export async function agentCheck(options: AgentCheckOptions, userConfig?: Partia
     let currentImageBuffer: Buffer;
     let domContext: DomNodeData[] | undefined;
 
+    let captureTime = 0;
+    let domTime = 0;
+
+    const startCurrent = Date.now();
     // We duck-type the playwright Page object to handle the union
     if ((options.current as any).screenshot && typeof (options.current as any).screenshot === 'function') {
         const page = options.current as Page;
         currentImageBuffer = await captureScreenshot(page);
+        captureTime += Date.now() - startCurrent;
 
         // Only extract DOM if not explicitly disabled
         if (options.dom?.boundingBoxes !== false && options.dom?.accessibilityTree !== false) {
+            const startDom = Date.now();
             domContext = await extractDomContext(page);
+            domTime = Date.now() - startDom;
         }
     } else {
         currentImageBuffer = resolveBuffer(options.current as string | Buffer);
+        captureTime += Date.now() - startCurrent;
     }
 
     // 3. Resolve Baseline
     let baselineBuffer: Buffer | undefined;
     if (options.baseline) {
+        const startBase = Date.now();
         if ((options.baseline as any).screenshot && typeof (options.baseline as any).screenshot === 'function') {
             baselineBuffer = await captureScreenshot(options.baseline as Page);
         } else {
             baselineBuffer = resolveBuffer(options.baseline as string | Buffer);
         }
+        captureTime += Date.now() - startBase;
     }
 
     // 4. Build Prompt & Execute Ensembles
     const hasBaseline = !!baselineBuffer;
-    const prompt = buildPrompt(hasBaseline, options.expect, domContext, options.mode);
+    const prompt = buildPrompt({
+        hasBaseline,
+        expectStr: options.expect,
+        domContext,
+        mode: options.mode,
+        baselineRole: options.baselineRole,
+        ignoreRegions: options.ignoreRegions
+    });
 
     const images = baselineBuffer ? [baselineBuffer, currentImageBuffer] : [currentImageBuffer];
 
@@ -77,13 +94,24 @@ export async function agentCheck(options: AgentCheckOptions, userConfig?: Partia
                     let parsed: AgentCheckResult;
                     try {
                         parsed = JSON.parse(cleanStr);
+                        parsed.latencyBreakdown = {
+                            capture: captureTime,
+                            domExtraction: domTime,
+                            vlmInference: result.latencyMs || 0
+                        };
+                        if (domContext) parsed.domContext = domContext;
                     } catch (e) {
                         // High chance of hallucinated format. Fallback fail.
                         parsed = {
                             pass: false,
                             confidence: 0,
                             feedback: `VLM failed to return valid JSON. Raw response: ${cleanStr}`,
-                            issues: []
+                            issues: [],
+                            latencyBreakdown: {
+                                capture: captureTime,
+                                domExtraction: domTime,
+                                vlmInference: result.latencyMs || 0
+                            }
                         };
                     }
                     return parsed;
