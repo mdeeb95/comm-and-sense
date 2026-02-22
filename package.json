@@ -8,7 +8,7 @@
     "doc": "docs"
   },
   "bin": {
-    "comm-sense": "./dist/cli/index.js"
+    "comm-sense": "dist/cli/index.js"
   },
   "scripts": {
     "build": "tsc",
