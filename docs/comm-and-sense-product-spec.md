@@ -316,7 +316,7 @@ A hosted proxy to OpenAI/Claude is trivially forkable. The moat is in orchestrat
 
 1. **Phase 1: Agent Adoption (Free).** Become the standard visual testing tool that AI engineering agents use locally.
 2. **Phase 2: Comm & Sense Cloud.** Provide a centralized dashboard where teams can view the visual outputs their agents are generating in CI/CD. This provides historical analytics, cross-project benchmarking, and shared baseline management.
-3. **Phase 3: Fine-tuned UI Models.** Use anonymized telemetry (from opt-in teams) pointing to thousands of "mockup vs. react code" comparisons to train a custom open-source-light VLM that executes the specific State validation faster and cheaper than GPT-4o. 
+3. **Phase 3: Fine-tuned UI Models.** Use anonymized telemetry (from opt-in teams) pointing to thousands of "mockup vs. react code" comparisons to train a custom open-source-light VLM that executes the specific State validation faster and cheaper than GPT-5.2 or Claude 4.5. 
 
 ---
 
@@ -365,6 +365,6 @@ The core SDK is built in **TypeScript / Node.js** for the following reasons:
 
 ## 19. Open Questions
 
-1. **Local Model Viability:** Do current small, local Vision models (e.g., Qwen-VL) have sufficient reasoning to accurately catch state bugs without relying on Claude 3.5 Sonnet?
-2. **Token Budgets:** Multi-turn architectures and extensive DOM trees are token-heavy. What is the optimal balance to prevent context window overflow?
+1. **Local Model Viability:** Do current small, local Vision models (e.g., Molmo 7B, Pixtral 12B, Qwen3-VL) have sufficient reasoning to accurately catch state bugs without relying on Claude 4.6 Sonnet?
+2. **Token Budgets:** Multi-turn architectures and extensive DOM trees are token-heavy. What is the optimal balance to prevent context window overflow, even with massive context models like Gemini 3 and Claude 4.6?
 3. **Naming:** Does `comm-sense` conflict with npm packages? Is it available?

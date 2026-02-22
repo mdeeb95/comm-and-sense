@@ -6,7 +6,7 @@ export class ClaudeAdapter implements VLMAdapter {
     private client: Anthropic;
     private defaultModel: string;
 
-    constructor(apiKey: string, model: string = 'claude-3-5-sonnet-20241022') {
+    constructor(apiKey: string, model: string = 'claude-4-5-sonnet-latest') {
         if (!apiKey) {
             throw new Error('ClaudeAdapter requires an API key');
         }
