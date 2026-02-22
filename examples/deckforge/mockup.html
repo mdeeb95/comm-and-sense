@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
+    .card-list { display: flex; gap: 10px; }
+    .card { padding: 20px; border-radius: 8px; background: white; border: 2px solid transparent; width: 100px; text-align: center; }
+    /* In the mockup, the background cards are unselected (default border) */
+    
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal {
+      background: white; padding: 30px; border-radius: 12px;
+      width: 300px;
+    }
+    .modal h2 { margin-top: 0; }
+    
+    .modal-selection {
+      display: flex; gap: 10px; margin-top: 20px;
+    }
+    .modal-item { 
+      padding: 15px; border-radius: 6px; border: 2px solid #ccc; cursor: pointer;
+    }
+    /* In the mockup, the user has selected the first item in the modal */
+    .modal-item.selected {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>DeckForge Manager</h1>
+  
+  <div class="card-list" aria-label="Deck Cards">
+    <div class="card">Card A</div>
+    <div class="card">Card B</div>
+    <div class="card">Card C</div>
+  </div>
+
+  <div class="modal-overlay" role="dialog" aria-label="Swap Card Modal">
+    <div class="modal">
+      <h2>Swap Card</h2>
+      <p>Select a replacement card:</p>
+      
+      <div class="modal-selection">
+        <div class="modal-item selected" role="button">Fire Blast</div>
+        <div class="modal-item" role="button">Ice Shield</div>
+      </div>
+      
+      <button style="margin-top: 20px; padding: 10px 20px;">Confirm Swap</button>
+    </div>
+  </div>
+</body>
+</html>

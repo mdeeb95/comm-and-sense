@@ -50,7 +50,11 @@ export async function agentCheck(options: AgentCheckOptions, userConfig?: Partia
     // 3. Resolve Baseline
     let baselineBuffer: Buffer | undefined;
     if (options.baseline) {
-        baselineBuffer = resolveBuffer(options.baseline);
+        if ((options.baseline as any).screenshot && typeof (options.baseline as any).screenshot === 'function') {
+            baselineBuffer = await captureScreenshot(options.baseline as Page);
+        } else {
+            baselineBuffer = resolveBuffer(options.baseline as string | Buffer);
+        }
     }
 
     // 4. Build Prompt & Execute Ensembles

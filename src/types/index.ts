@@ -31,7 +31,7 @@ export interface AgentCheckResult {
 
 export interface AgentCheckOptions {
     /** The baseline image to anchor the test against (HTML Mockup) */
-    baseline?: string | Buffer;
+    baseline?: string | Buffer | Page;
 
     /** The current screenshot to evaluate */
     current: string | Buffer | Page;
