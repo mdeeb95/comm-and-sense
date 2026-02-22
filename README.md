@@ -1,8 +1,8 @@
-# Comm & Sense 🧠🖼️
+# Comm & Sense VLM 🧠🖼️
 
 The AI-native visual testing library for Agentic TDD. `comm-sense` goes beyond brittle pixel-perfect diffs by using Vision Language Models (VLMs) and DOM Accessibility Trees to catch semantic state bugs (clipping, state bleeding, layout breaks).
 
-[![npm version](https://img.shields.io/npm/v/comm-sense.svg)](https://www.npmjs.com/package/comm-sense)
+[![npm version](https://img.shields.io/npm/v/comm-sense-vlm.svg)](https://www.npmjs.com/package/comm-sense-vlm)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 🚀 Getting Started
@@ -10,7 +10,7 @@ The AI-native visual testing library for Agentic TDD. `comm-sense` goes beyond b
 ### Installation
 
 ```bash
-npm install -D comm-sense playwright
+npm install -D comm-sense-vlm playwright
 ```
 
 ### Environment Configuration

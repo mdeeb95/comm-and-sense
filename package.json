@@ -1,5 +1,5 @@
 {
-  "name": "comm-sense",
+  "name": "comm-sense-vlm",
   "version": "1.0.0",
   "description": "Visual Oracle for Agentic Evaluators - Semantic UI testing using LLMs.",
   "main": "dist/index.js",
