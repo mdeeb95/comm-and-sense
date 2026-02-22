@@ -51,7 +51,7 @@ export interface AgentCheckOptions {
     ensemble?: number;
 
     /** VLM provider to use */
-    model?: 'claude' | 'openai' | 'local' | 'qwen' | 'openrouter';
+    model?: 'claude' | 'openai' | 'local' | 'qwen' | 'openrouter' | 'gemini' | 'mistral';
 
     /** DOM enrichment options */
     dom?: {
@@ -67,7 +67,9 @@ export interface CommSenseConfig {
         local?: { endpoint: string };
         qwen?: { apiKey: string; baseURL?: string; model?: string };
         openrouter?: { apiKey: string; model?: string };
+        gemini?: { apiKey: string; model?: string };
+        mistral?: { apiKey: string; model?: string };
     };
-    defaultModel: 'claude' | 'openai' | 'local' | 'qwen' | 'openrouter';
+    defaultModel: 'claude' | 'openai' | 'local' | 'qwen' | 'openrouter' | 'gemini' | 'mistral';
     defaultEnsemble: number;
 }

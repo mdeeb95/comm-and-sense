@@ -12,6 +12,14 @@ export const defaultConfig: CommSenseConfig = {
         },
         openrouter: {
             apiKey: process.env.COMM_SENSE_OPENROUTER_API_KEY || ''
+        },
+        gemini: {
+            apiKey: process.env.COMM_SENSE_GEMINI_API_KEY || '',
+            model: 'gemini-2.5-pro'
+        },
+        mistral: {
+            apiKey: process.env.COMM_SENSE_MISTRAL_API_KEY || '',
+            model: 'pixtral-12b-2409'
         }
     },
     defaultModel: 'claude',

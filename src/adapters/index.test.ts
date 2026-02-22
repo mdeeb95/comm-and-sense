@@ -3,6 +3,8 @@ import { createAdapter } from './index.js';
 import { CommSenseConfig } from '../types/index.js';
 import { ClaudeAdapter } from './claude.js';
 import { LocalAdapter } from './local.js';
+import { GeminiAdapter } from './gemini.js';
+import { MistralAdapter } from './mistral.js';
 import Anthropic from '@anthropic-ai/sdk';
 
 // Mock the Anthropic SDK
@@ -19,6 +21,46 @@ vi.mock('@anthropic-ai/sdk', () => {
         default: class MockAnthropic {
             messages = {
                 create: mockCreate
+            };
+        }
+    };
+});
+
+// Mock Google GenAI SDK
+const { mockGeminiGenerateContent } = vi.hoisted(() => {
+    return {
+        mockGeminiGenerateContent: vi.fn().mockResolvedValue({
+            text: '{"pass": true}'
+        })
+    };
+});
+
+vi.mock('@google/genai', () => {
+    return {
+        GoogleGenAI: class MockGenAI {
+            models = {
+                generateContent: mockGeminiGenerateContent
+            };
+        }
+    };
+});
+
+// Mock Mistral SDK
+const { mockMistralComplete } = vi.hoisted(() => {
+    return {
+        mockMistralComplete: vi.fn().mockResolvedValue({
+            choices: [{
+                message: { content: '{"pass": true}' }
+            }]
+        })
+    };
+});
+
+vi.mock('@mistralai/mistralai', () => {
+    return {
+        Mistral: class MockMistral {
+            chat = {
+                complete: mockMistralComplete
             };
         }
     };
@@ -61,6 +103,30 @@ describe('VLM Adapters Factory', () => {
         expect(adapter).toBeInstanceOf(LocalAdapter);
         expect(adapter.name).toBe('local');
     });
+
+    it('creates the Gemini adapter', () => {
+        const config: CommSenseConfig = {
+            ...baseConfig,
+            defaultModel: 'gemini',
+            providers: { gemini: { apiKey: 'sk-gemini-test' } }
+        };
+
+        const adapter = createAdapter(config);
+        expect(adapter).toBeInstanceOf(GeminiAdapter);
+        expect(adapter.name).toBe('gemini');
+    });
+
+    it('creates the Mistral adapter', () => {
+        const config: CommSenseConfig = {
+            ...baseConfig,
+            defaultModel: 'mistral',
+            providers: { mistral: { apiKey: 'sk-mistral-test' } }
+        };
+
+        const adapter = createAdapter(config);
+        expect(adapter).toBeInstanceOf(MistralAdapter);
+        expect(adapter.name).toBe('mistral');
+    });
 });
 
 describe('ClaudeAdapter Implementation', () => {
@@ -76,3 +142,30 @@ describe('ClaudeAdapter Implementation', () => {
         expect(mockCreate).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('GeminiAdapter Implementation', () => {
+    it('correctly maps buffers and prompts into Gemini payload', async () => {
+        const adapter = new GeminiAdapter('sk-gemini-test');
+
+        const img1 = Buffer.from('fakeimg1');
+        const result = await adapter.evaluate([img1], 'Analyze this image');
+
+        expect(result.response).toBe('{"pass": true}');
+        expect(result.latencyMs).toBeGreaterThanOrEqual(0);
+        expect(mockGeminiGenerateContent).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('MistralAdapter Implementation', () => {
+    it('correctly maps buffers and prompts into Mistral payload', async () => {
+        const adapter = new MistralAdapter('sk-mistral-test');
+
+        const img1 = Buffer.from('fakeimg1');
+        const result = await adapter.evaluate([img1], 'Analyze this image');
+
+        expect(result.response).toBe('{"pass": true}');
+        expect(result.latencyMs).toBeGreaterThanOrEqual(0);
+        expect(mockMistralComplete).toHaveBeenCalledTimes(1);
+    });
+});
+

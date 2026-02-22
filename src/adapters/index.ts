@@ -4,6 +4,8 @@ import { ClaudeAdapter } from './claude.js';
 import { LocalAdapter } from './local.js';
 import { QwenAdapter } from './qwen.js';
 import { OpenAIAdapter } from './openai.js';
+import { GeminiAdapter } from './gemini.js';
+import { MistralAdapter } from './mistral.js';
 
 export function createAdapter(config: CommSenseConfig): VLMAdapter {
     const model = config.defaultModel;
@@ -42,6 +44,20 @@ export function createAdapter(config: CommSenseConfig): VLMAdapter {
                 throw new Error('Qwen API key is missing from configuration');
             }
             return new OpenAIAdapter(apiKey, baseURL, config.providers.qwen?.model);
+        }
+        case 'gemini': {
+            const apiKey = config.providers.gemini?.apiKey;
+            if (!apiKey) {
+                throw new Error('Gemini API key is missing from configuration');
+            }
+            return new GeminiAdapter(apiKey, config.providers.gemini?.model);
+        }
+        case 'mistral': {
+            const apiKey = config.providers.mistral?.apiKey;
+            if (!apiKey) {
+                throw new Error('Mistral API key is missing from configuration');
+            }
+            return new MistralAdapter(apiKey, config.providers.mistral?.model);
         }
         default:
             throw new Error(`Unsupported model configured: ${model}`);
