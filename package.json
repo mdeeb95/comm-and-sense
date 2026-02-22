@@ -1,8 +1,9 @@
 {
-  "name": "comm-and-sense",
+  "name": "comm-sense",
   "version": "1.0.0",
-  "description": "",
+  "description": "Visual Oracle for Agentic Evaluators - Semantic UI testing using LLMs.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "directories": {
     "doc": "docs"
   },
@@ -10,18 +11,32 @@
     "comm-sense": "./dist/cli/index.js"
   },
   "scripts": {
+    "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run test"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mdeeb95/comm-and-sense.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "keywords": [
+    "vlm",
+    "visual-testing",
+    "playwright",
+    "agentic",
+    "ai",
+    "semantic-ui"
+  ],
+  "author": "mdeeb95",
+  "license": "MIT",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/mdeeb95/comm-and-sense/issues"
   },
