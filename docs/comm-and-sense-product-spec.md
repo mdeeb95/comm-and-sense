@@ -24,7 +24,8 @@
 15. [Monetization Strategy](#monetization-strategy)
 16. [Roadmap](#roadmap)
 17. [Privacy & Data Handling](#privacy--data-handling)
-18. [Open Questions](#open-questions)
+18. [Tech Stack Decision](#tech-stack-decision)
+19. [Open Questions](#open-questions)
 
 ---
 
@@ -346,7 +347,23 @@ Screenshots of UIs frequently contain unreleased product designs.
 
 ---
 
-## 18. Open Questions
+## 18. Tech Stack Decision
+
+### Why TypeScript / Node.js?
+The core SDK is built in **TypeScript / Node.js** for the following reasons:
+1. **Target Developer Ecosystem:** Comm & Sense evaluates UI components (React, Vue, HTML/CSS). The developers and AI agents building these UIs are almost exclusively working in the JS/TS ecosystem. Returning it as an `npm` package is critical for adoption.
+2. **Playwright Native:** The DOM Context extraction layer requires seamless browser instrumentation. Playwright's native API is built in Node.js.
+3. **Agent Integration:** Most popular agentic frameworks (like the MCP servers driving Claude/Cursor) are natively written in TypeScript. 
+
+### Why not Python or Rust?
+- **Python** is the undisputed king of AI inference. If Comm & Sense ever builds the Phase 3 "Custom UI VLM Model", that backend orchestration will be written in Python. However, forcing front-end React developers to manage `pip` environments just to run a visual test is a massive adoption hurdle.
+- **Rust** would be blazing fast for image buffer math (like the proposed Smart Diff optimization gate). However, the primary execution bottleneck is the 2-5 second HTTP roundtrip to the VLM (Claude/GPT-4o). Writing the core request wrapper in Rust saves microseconds of execution time but sacrifices Playwright compatibility. 
+
+*Future Optimization Path:* If the image processing becomes a true local bottleneck, the pixel-diff math will be rewritten in Rust, compiled to WebAssembly, and called instantaneously from the core TypeScript library.
+
+---
+
+## 19. Open Questions
 
 1. **Local Model Viability:** Do current small, local Vision models (e.g., Qwen-VL) have sufficient reasoning to accurately catch state bugs without relying on Claude 3.5 Sonnet?
 2. **Token Budgets:** Multi-turn architectures and extensive DOM trees are token-heavy. What is the optimal balance to prevent context window overflow?
