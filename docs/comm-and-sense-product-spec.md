@@ -132,10 +132,13 @@ if (!result.pass) {
 }
 ```
 
-### 6.2 Hybrid Visual-DOM Ingestion
-**Priority:** P1
+### 6.2 Hybrid Visual-DOM Ingestion (Grounding Mode)
+**Priority:** P1 (Foundations Shipped)
 
-To give the VLM exact coordinates and prevent hallucination, Comm & Sense ingests the Accessibility Tree or DOM bounding boxes *alongside* the screenshot. If the VLM flags that a "sidebar is missing," but the DOM tree clearly shows `<aside id="sidebar" visible="true">`, the tool overrides the visual hallucination, or uses the DOM data to generate absolutely precise bounding box annotations for the error.
+Comm & Sense ingests the Accessibility Tree or DOM bounding boxes *alongside* the screenshot. In v1.0, this data is passed to the VLM to ground spatial understanding and prevent hallucinations. 
+
+> [!NOTE]
+> **Punted for v1.1:** Automated "hard override" logic (where code overrides a VLM judgment) and server-side drawing of red-box annotations on screenshots are scheduled for the next iteration. v1.0 returns raw coordinate data in the JSON result for developer inspection.
 
 ### 6.3 Complex State & Interaction Evaluation (The "DeckForge" Use Case)
 **Priority:** P1
@@ -322,19 +325,17 @@ A hosted proxy to OpenAI/Claude is trivially forkable. The moat is in orchestrat
 
 ## 16. Roadmap
 
-### v0.1 — Agentic MVP
-- Core `agentCheck()` function optimized for multi-turn anchoring.
-- Claude, OpenAI, and **Local Model (Ollama)** adapters.
-- Basic Ensemble voting ($pass@k$).
-- CLI testing tools.
+### v1.0 — Agentic Foundation (Shipped)
+- **Multi-turn Context Anchoring:** Core `agentCheck()` logic for high-accuracy standard/regression tests.
+- **Provider Adapters:** Claude, OpenAI, Gemini, and Mistral support.
+- **Cost Optimizations:** Adaptive ensemble strategy and auto-downscaling for semantic modes.
+- **Hybrid Grounding:** Ingestion of Accessibility Trees into the prompt context.
+- **Cost Telemetry:** Real-time USD estimation and latency breakdown.
 
-### v0.2 — Hybrid DOM Integration
-- Playwright/Puppeteer adapters to automatically extract DOM trees.
-- Anchor visual VLM descriptions to exact DOM coordinates.
-- Complex state testing helpers (input bleed simulations).
-
-### v1.0 — IDE Integration
-- Return visual bugs from Comm & Sense directly into the agent's IDE workspace (e.g., highlighting the specific React component that caused the Z-index bug).
+### v1.1 — Visual Polish & Hard Overrides
+- **Annotated Screenshots:** Server-side image manipulation to draw VLM-detected issues onto the result buffer.
+- **DOM Validator Plugin:** A rule-engine that validates VLM claims against the DOM (e.g., verifying if an "invisible" element is truly missing from the tree).
+- **IDE Integration:** Better local DX for visual bug navigation.
 
 ---
 
